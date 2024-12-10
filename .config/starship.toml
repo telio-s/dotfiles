@@ -1,0 +1,69 @@
+# ~/.config/starship.toml
+
+add_newline = true
+
+format = '''
+$username $directory$git_branch$git_status$git_state $fill$aws$nodejs$time $line_break$character
+'''
+
+palette = 'lantao'
+[palettes.lantao]
+mustard = '#ffe600'
+aws = '#ffd000'
+git_branch = '#da9ffc'
+git_status = '#f084ba'
+git_state = '#d8fc9f'
+git_merge = '#9474c4'
+git_rebase = '#f0b184'
+time = '#c3c2c4'
+
+[fill]
+symbol = ' '
+
+[aws]
+disabled = false
+format = '[$symbol($profile)]($style)'
+style = 'aws'
+symbol = ' '
+[aws.region_aliases]
+ap-southeast-1 = 'ap-southeast-1'
+[aws.profile_aliases]
+default = 'default'
+amity = 'amity'
+
+[username]
+show_always = true
+format = '[$user]($style)'
+style_user = 'bold mustard'
+
+[nodejs]
+disabled = false
+format = '[ $symbol($version)](bold green)'
+symbol = ' '
+
+[git_branch]
+symbol = "󰊤"
+style = "bold git_branch"
+format = '[$symbol ($branch)]($style)'
+
+[git_status]
+style = "bold git_status"
+format = '[$all_status$ahead_behind]($style)'
+
+[git_state]
+format = '[ $state]($style) '
+style = "bold git_state"
+rebase = '[ Rebase](bold git_rebase)'
+merge = '[ Merge](bold git_merge)'
+cherry_pick = '[ Picking](bold red)'
+
+[time]
+disabled = false
+time_format = "%T"
+style = "time"
+format = '[  $time]($style)'
+
+[line_break]
+disabled = false
+
+
