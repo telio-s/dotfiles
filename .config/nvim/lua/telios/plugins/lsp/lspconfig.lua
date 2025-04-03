@@ -9,6 +9,7 @@ return {
 	config = function()
 		-- import lspconfig plugin
 		local lspconfig = require("lspconfig")
+		local util = require("lspconfig/util")
 
 		-- import mason_lspconfig plugin
 		local mason_lspconfig = require("mason-lspconfig")
@@ -18,8 +19,6 @@ return {
 
 		-- import linting plugin
 		local lint = require("lint")
-
-
 
 		local keymap = vim.keymap -- for conciseness
 
@@ -74,6 +73,15 @@ return {
 
 		-- used to enable autocompletion (assign to every lsp server config)
 		local capabilities = cmp_nvim_lsp.default_capabilities()
+		local on_attach = cmp_nvim_lsp.on_attach
+
+		local present, ufo = pcall(require, "ufo")
+		if present then
+			capabilities.textDocument.foldingRange = {
+				dynamicRegistration = false,
+				lineFoldingOnly = true,
+			}
+		end
 
 		-- Change the Diagnostic symbols in the sign column (gutter)
 		-- (not in youtube nvim video)
@@ -86,9 +94,11 @@ return {
 		mason_lspconfig.setup_handlers({
 			-- default handler for installed servers
 			function(server_name)
-				lspconfig[server_name].setup({
-					capabilities = capabilities,
-				})
+				if server_name ~= "rust_analyzer" then
+					lspconfig[server_name].setup({
+						capabilities = capabilities,
+					})
+				end
 			end,
 			["svelte"] = function()
 				-- configure svelte server
@@ -109,6 +119,41 @@ return {
 				-- configure lua server (with special settings)
 				lspconfig["lua_ls"].setup({
 					capabilities = capabilities,
+					on_init = function(client)
+						if client.workspace_folders then
+							local path = client.workspace_folders[1].name
+							if
+								path ~= vim.fn.stdpath("config")
+								and (
+									vim.loop.fs_stat(path .. "/.luarc.json") or vim.loop.fs_stat(
+										path .. "/.luarc.jsonc"
+									)
+								)
+							then
+								return
+							end
+						end
+
+						client.config.settings.Lua = vim.tbl_deep_extend("force", client.config.settings.Lua, {
+							runtime = {
+								-- Tell the language server which version of Lua you're using
+								-- (most likely LuaJIT in the case of Neovim)
+								version = "LuaJIT",
+							},
+							-- Make the server aware of Neovim runtime files
+							workspace = {
+								checkThirdParty = false,
+								library = {
+									vim.env.VIMRUNTIME,
+									-- Depending on the usage, you might want to add additional paths here.
+									-- "${3rd}/luv/library"
+									-- "${3rd}/busted/library",
+								},
+								-- or pull in all of 'runtimepath'. NOTE: this is a lot slower and will cause issues when working on your own configuration (see https://github.com/neovim/nvim-lspconfig/issues/3189)
+								-- library = vim.api.nvim_get_runtime_file("", true)
+							},
+						})
+					end,
 					settings = {
 						Lua = {
 							-- make the language server recognize "vim" global
@@ -122,14 +167,6 @@ return {
 					},
 				})
 			end,
-			-- ["eslint"] = function()
-			-- 	-- configure eslint-lsp to disable when no .eslintrc files
-			-- 	lspconfig['eslint'].setup({
-			-- 		autostart = false,
-			-- 		-- capabilities = capabilities,
-			-- 		-- on_attach = eslint_attach()
-			-- 	})
-			-- end,
 		})
 	end,
 }

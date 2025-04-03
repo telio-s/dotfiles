@@ -1,9 +1,8 @@
 # ~/.config/starship.toml
 
-add_newline = true
+add_newline = false
 
-format = '''
-$username $directory$git_branch$git_status$git_state $fill$aws$nodejs$time $line_break$character
+format = '''$username $directory$git_branch$git_status$git_state $fill$aws$nodejs$time $line_break$character
 '''
 
 palette = 'lantao'
@@ -28,7 +27,11 @@ symbol = ' '
 [aws.region_aliases]
 ap-southeast-1 = 'ap-southeast-1'
 [aws.profile_aliases]
+<<<<<<< HEAD
 default = 'default'
+=======
+default = 'personal'
+>>>>>>> 229f13f (update lsp and nvim tab bar)
 amity = 'amity'
 
 [username]

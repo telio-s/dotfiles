@@ -8,10 +8,11 @@ local config = wezterm.config_builder()
 
 config = {
 	enable_tab_bar = false,
-	window_decorations = "RESIZE",
-	window_background_opacity = 0.9,
+	window_decorations = "RESIZE|MACOS_FORCE_ENABLE_SHADOW",
+	window_background_opacity = 0.8,
 	macos_window_background_blur = 30,
 	-- font = wezterm.font("MesloLGS Nerd Font Mono"),
+	font = wezterm.font("JetBrains Mono"),
 	font_size = 19,
 	color_scheme = "Catppuccin Mocha",
 	window_background_gradient = {

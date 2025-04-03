@@ -10,6 +10,15 @@ if not vim.loop.fs_stat(lazypath) then
 	})
 end
 vim.opt.rtp:prepend(lazypath)
+for _, method in ipairs({ "textDocument/diagnostic", "workspace/diagnostic" }) do
+	local default_diagnostic_handler = vim.lsp.handlers[method]
+	vim.lsp.handlers[method] = function(err, result, context, config)
+		if err ~= nil and err.code == -32802 then
+			return
+		end
+		return default_diagnostic_handler(err, result, context, config)
+	end
+end
 
 require("lazy").setup(
 	{ { import = "telios.plugins" }, { import = "telios.plugins.lsp" }, { "voldikss/vim-floaterm" } },
@@ -23,6 +32,13 @@ require("lazy").setup(
 		},
 		rocks = {
 			hererocks = false,
+		},
+		ui = {
+			border = "double",
+			size = {
+				width = 0.8,
+				height = 0.8,
+			},
 		},
 	}
 )

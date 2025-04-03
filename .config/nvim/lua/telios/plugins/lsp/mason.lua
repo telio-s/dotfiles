@@ -34,8 +34,10 @@ return {
 				"svelte",
 				"lua_ls",
 				"pyright",
-				"eslint",
+				-- "eslint",
 				"ts_ls",
+				"terraformls",
+				"yamlls",
 			},
 		})
 
